@@ -1,4 +1,5 @@
 from pydantic import BaseModel,validator,EmailStr
+from models.users import User
 
 class UserSchema(BaseModel):
     id: int
