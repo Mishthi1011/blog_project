@@ -12,7 +12,7 @@ class Blog(Base):
     body = Column(Text)
     created_at = Column(DateTime,nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
-    image = Column(String(200))
+    status = Column(String(200))
 
     def info(self):
         return({
