@@ -16,10 +16,7 @@ app.include_router(user_router)
 app.include_router(blog_router)
 app.include_router(image_router)
 
-class IdNotFoundException(HTTPException):
-    def __init__(self, Id: int):
-        detail = f"{Id} not found"
-        super().__init__(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
+
 
 @app.exception_handler(HTTPException)
 async def validation_exception_handler(request: Request, e: HTTPException):

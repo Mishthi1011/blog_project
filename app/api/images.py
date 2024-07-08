@@ -33,10 +33,10 @@ def get_image_details():
         images = db.query(Image).all()
         print(images ,"333")
         all_images = [obj.info() for obj in images]
+        return JSONResponse(content={"message":"data fetched","data":all_images},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":all_images},status_code=200)
 
   
 @router.put("/{id}")
@@ -46,10 +46,10 @@ def update_image_status(id:int, updateImage:ImageSchema):
         image.url = updateImage.url
         image.caption = updateImage.caption
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":image},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)    
-    return JSONResponse(content={"message":"data fetched","data":image},status_code=200)
 
 @router.delete("/{id}")
 def delete_image(id:int):
@@ -57,7 +57,7 @@ def delete_image(id:int):
         image = db.query(Image).get(id)
         db.delete(image)
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":image},status_code=200)    
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":image},status_code=200)    

@@ -20,10 +20,10 @@ def create_blog(blog:BlogSchema):
         save_blog = Blog(**blog_info)
         db.add(save_blog)
         db.commit()
+        return JSONResponse(content={"message":"blog created by user","data":[]},status_code=201)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"blog not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"blog created by user","data":[]},status_code=201)
 
 @router.get("")
 def get_user_details():
@@ -31,10 +31,10 @@ def get_user_details():
         blogs = db.query(Blog).all()
         print(blogs ,"222")
         all_blogs = [obj.info() for obj in blogs]
-    except Exception as e:
+        return JSONResponse(content={"message":"data fetched","data":all_blogs},status_code=200)
+    except Exception as e:  
         print(e ,"##########")
         return JSONResponse(content={"message":"blog not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":all_blogs},status_code=200)
      
 
 @router.put("/{id}")
@@ -45,10 +45,10 @@ def update_blog_status(id:int, updateBlog:BlogSchema):
         blog.body = updateBlog.body
         blog.status = updateBlog.status
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":blog},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"blog not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":blog},status_code=200)
 
 @router.delete("/{id}")
 def delete_user(id:int):
@@ -59,7 +59,7 @@ def delete_user(id:int):
         # blog.status = Blog.status
         db.delete(blog)
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":blog},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"blog not found","data":[]}, status_code=404)    
-    return JSONResponse(content={"message":"data fetched","data":blog},status_code=200)

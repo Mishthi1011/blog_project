@@ -23,10 +23,10 @@ def create_user(user:UserSchema):
         save_user = User(**user_info)
         db.add(save_user)
         db.commit()
+        return JSONResponse(content={"message":"account created successfully","data":[]},status_code=201)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"account created successfully","data":[]},status_code=201)
 
 @router.get("")
 def get_user_details():
@@ -34,15 +34,10 @@ def get_user_details():
         users = db.query(User).all()
         print(users ,"111")
         all_users = [obj.info() for obj in users]
+        return JSONResponse(content={"message":"data fetched","data":all_users},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":all_users},status_code=200)
-
-@router.get("user_id/{id}")
-async def read_user_details(id:int):
-    if id not in User:
-     raise HTTPException(status_code=404, detail="Id not found")
             
 @router.put("/{id}")
 def update_user_status(id:int, updateUser:UserSchema):
@@ -52,10 +47,10 @@ def update_user_status(id:int, updateUser:UserSchema):
         user.username = updateUser.username
         user.contact = updateUser.contact
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":user},status_code=200)
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)
-    return JSONResponse(content={"message":"data fetched","data":user},status_code=200)
 
 @router.delete("/{id}")
 def delete_user(id:int):
@@ -66,8 +61,8 @@ def delete_user(id:int):
         # user.contact = User.contact
         db.delete(user)
         db.commit()
+        return JSONResponse(content={"message":"data fetched","data":user},status_code=200)       
     except Exception as e:
         print(e ,"##########")
         return JSONResponse(content={"message":"user not found","data":[]}, status_code=404)    
     
-    return JSONResponse(content={"message":"data fetched","data":user},status_code=200)       
