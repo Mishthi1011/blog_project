@@ -8,10 +8,10 @@ class User(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     username = Column(String(100), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False) 
-    hashed_password = Column(String(255), nullable=False) 
+    password = Column(String(255), nullable=False) 
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)
-    contact = Column(Integer,unique=True, nullable=False)
+    contact = Column(String(15),unique=True, nullable=False)
 
     def info(self):
         return({

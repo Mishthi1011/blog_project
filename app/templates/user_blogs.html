@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blogs - My Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fbfeff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            background: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=1500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8b2ZmaWNlfGVufDB8fDB8fHww') no-repeat center fixed
+        }
+
+        .card {
+            background: rgba(207, 201, 201, 0.8);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            transition: 0.3s;
+            width: 50%;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            display: flex;
+            flex-direction: row;
+            padding: 1rem;
+            align-items: center;
+            position: relative;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            padding: 5px 16px;
+            flex:1;
+        }
+
+        .blog-container {
+            background-color: #ffffff;
+            padding: 3rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            max-width: 600px;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .blog-container h2 {
+            margin-bottom: 0.5rem;
+            color: #010606;
+        }
+
+        .blog-container p {
+            color: #555555;
+        }
+
+        .blog-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-container input[type="text"],
+        .blog-container textarea,
+        .blog-container select {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+
+
+        .blog-container textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .blog-container input[type="submit"],
+        .blog-container button {
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: #be3232;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .blog-container input[type="submit"]:hover,
+        .blog-container button:hover {
+            background-color: #0056b3;
+        }
+
+        .blog-container button {
+            margin-top: 0.5rem;
+        }
+        .large-input {
+            width: 80%;
+            height: 2.0rem; 
+        }
+        .title-input{
+            width: 20%;
+            height:1.5rem
+        }
+        .image-input{
+            width: 50%;
+            height:1.5rem
+        }
+        .card img {
+            max-width: 150px;
+            margin-right: 1rem;
+            border-radius: 8px;
+        }
+        .icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 4rem;
+            color: #007bff;
+            display: none;
+        }
+       
+    </style>
+</head>
+
+<body >
+    <h1 class="head">MY BLOGS</h1>
+    {% for item in data %}
+    <h3 class="content">blog_id={{item.id}}</h3>
+    <div class="card"onclick="showButtons('{{item.user_id}}', '{{item.id}}')"  >
+       
+        <img id="img{{item.id}}" src="{{item.image_url}}" alt="Blog Image" >
+       <h4><input type="text" id="imgUrl{{item.id}}" name="image_url" value="{{item.image_url}}" style="display: none;"></h4>
+       <div id="icon{{item.id}}" style="display: none;" class="icon">⌨️</div>
+         
+        
+        <div class="container">
+            <h3>Title: <input id="title{{item.id}}" name="title" value="{{item.title}}"class="title-input" disabled></h3>
+            <h3>Blog: <input id="content{{item.id}}" name="body" value="{{item.body}}" class="large-input" disabled></h3>
+            
+            <div id="myButtons{{item.id}}"  style="display:none">
+
+                <button id="cancel{{ item.id }}"
+                    onclick="removeUpdate('{{ item.id }}', '{{ item.title }}', '{{ item.body }}','{{ item.image_url }}')"
+                    disabled>Cancel</button>
+                <button id="save{{ item.id }}"
+                    onclick="updateBlog('{{ item.id }}', '{{ item.title }}', '{{ item.body }}','{{ item.image_url }}')" disabled>Save</button>
+                <button id="update{{ item.id }}"
+                    onclick="setUpdateBlog('{{item.id}}','{{ item.user_id }}')">Update</button>
+                <button id="delete{{ item.id }}" onclick="deleteBlog('{{ item.id }}')" disabled>Delete</button>
+            </div>
+
+        </div>
+    </div>
+    {% endfor %}
+
+    <script>
+window.onload =function(){
+    document.querySelectorAll('.card').forEach(card => {
+                const blog_id = card.getAttribute('onclick').match(/,\s*'(\d+)'/)[1];
+                const user_id = card.getAttribute('onclick').match(/'(\d+)'/)[1];
+                showIcon(blog_id, user_id);
+            });
+        };
+
+
+
+        function getCurrentUserId() {
+            const token = window.localStorage.getItem('token')
+            if (!token)
+                return null;
+
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            return payload.id;
+        }
+
+       
+        function showButtons(user_id,blog_id) {
+            const currentUserId = getCurrentUserId();
+            var x = document.getElementById(`myButtons${blog_id}`);
+            if (currentUserId == user_id) {
+                
+                 x.style.display = 'block'
+                
+                
+            } else {
+                return;
+                return alert("this is not your blog");
+                
+            }
+        }
+        function showIcon(blog_id,user_id) {
+            const currentUserId = getCurrentUserId();
+            const icon = document.getElementById(`icon${blog_id}`);
+            if (currentUserId == user_id) {    
+            icon.style.display = 'block';
+        }
+        else{
+            return;
+        }}
+
+        function setUpdateBlog(id) {
+           
+                const delete9 = document.getElementById(`delete${id}`)
+                delete9.removeAttribute("disabled")
+                const title = document.getElementById(`title${id}`)
+                title.removeAttribute("disabled")
+                const body = document.getElementById(`content${id}`)
+                body.removeAttribute("disabled")
+                const cancel = document.getElementById(`cancel${id}`)
+                cancel.removeAttribute("disabled")
+                const save = document.getElementById(`save${id}`)
+                save.removeAttribute("disabled")
+                const img =document.getElementById(`imgUrl${id}`)
+                img.style.display='block'
+    
+            }
+        
+
+        function removeUpdate(id, titlev, bodyv,imgv) {
+
+            console.log(id, titlev, bodyv, "##############eement")
+
+            const title = document.getElementById(`title${id}`)
+            title.setAttribute("disabled", true)
+            title.value = titlev
+
+            const body = document.getElementById(`content${id}`)
+            body.setAttribute("disabled", true)
+            body.value = bodyv
+
+            const img =document.getElementById(`imgUrl${id}`)
+            img.style.display ='none'
+            img.value = imgv
+
+            const cancel = document.getElementById(`cancel${id}`)
+            cancel.setAttribute("disabled", true)
+            const save = document.getElementById(`save${id}`)
+            save.setAttribute("disabled", true)
+            const delete9 = document.getElementById(`delete${id}`)
+            delete9.setAttribute("disabled", true)
+            window.location.reload()
+        }
+
+
+        function updateBlog(id) {
+
+            const token = window.localStorage.getItem("token")
+            alert("your changes will now be saved")
+            const url = `http://127.0.0.1:8000/api/v1/blogs/${id}`
+            fetch(url, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    "title": document.getElementById(`title${id}`).value,
+                    "body": document.getElementById(`content${id}`).value,
+                    "image_url": document.getElementById(`imgUrl${id}`).value,
+                })
+            }).then(response => {
+                window.location.reload()
+            });
+            const cancel = document.getElementById("cancel")
+            cancel.setAttribute("disabled", true)
+            const save = document.getElementById("save")
+            save.setAttribute("disabled", true)
+        }
+
+
+        function deleteBlog(id) {
+
+            alert("are u sure u want to delete")
+            const url = `http://127.0.0.1:8000/api/v1/blogs/${id}`
+
+            fetch(url, {
+                method: 'DELETE', headers: {
+                    "Content-Type": "application/json",
+                }
+            }).then(response => {
+                window.location.reload()
+            })
+        }
+
+     
+
+
+    </script>
+</body>
+
+</html>

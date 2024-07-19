@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - My Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f7f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?q=80&w=1500&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center fixed
+        }
+
+        .register-container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2rem;
+            
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .register-container h1 {
+            margin-bottom: 1.5rem;
+            color: #333333;
+        }
+
+        .register-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .register-container input[type="text"],
+        .register-container input[type="email"],
+        .register-container input[type="password"],
+        .register-container input[type="tel"] {
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .register-container input[type="submit"] {
+            padding: 0.75rem;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .register-container input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        .register-container a {
+            display: block;
+            margin-top: 1rem;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .register-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="register-container">
+        <h1>Register</h1>
+        <form id="registerForm">
+            <div class="error" id="errorMessage"></div>
+            <input type="text" name="username" id="username" placeholder="Username" required minlength="3">
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <input type="password" name="password" id="password" placeholder="Password" required minlength="3">
+            <input type="tel" name="contact" id="contact" placeholder="Contact Number" required pattern="^\d{10}$">
+            <input type="submit" value="Register">
+        </form>
+        <a href="/login">Already have an account? Login</a>
+    </div>
+</body>
+<script>
+    
+async function getData(){
+    name = document.getElementById("username").value;
+    data = {
+        "key":"value"
+    } 
+
+}
+
+    registerForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = new FormData(registerForm);
+
+        let formObject = {}
+        for (const [name, value] of data) {
+            formObject[name] = value
+        }
+
+        const url = "http://127.0.0.1:8000/api/v1/users"
+
+
+        fetch(url,{method:"POST", headers: {
+            "Content-Type": "application/json"
+        }, body:JSON.stringify(formObject)}).then((res)=>{
+            console.log(res , "###########api response")
+            {
+                if(res.status != 201 ){
+                    alert(res.detail[0].msg)  
+                }else{
+                    window.location.replace("/login")
+                }
+                console.log(res , "######response")
+                    
+                    
+                }
+            
+        }).catch(err=>{
+            console.log(err)
+        })
+    })
+
+
+
+</script>
+
+
+</html>

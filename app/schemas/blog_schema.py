@@ -4,8 +4,8 @@ from app.models.blogs import Blog
 class BlogSchema(BaseModel):
     title:str
     body: str
-    status: str
-    
+    image_url: str
+   
     @validator("title")
     def validate_title(v):
         if not v:
@@ -21,9 +21,10 @@ class BlogSchema(BaseModel):
             raise ValueError("Body cannot be empty")
         return v
 
-    @validator("status")
-    def validate_status(v):
+    @validator("image_url")
+    def validate_image_url(v):
         if not v:
-            raise ValueError("status is required")
-        
+            raise ValueError("url cannot be empty")
+        return v
+
 

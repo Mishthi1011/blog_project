@@ -5,7 +5,7 @@ class UserSchema(BaseModel):
     username:str
     email: EmailStr
     password: str
-    contact:int
+    contact:str
         
 
     @validator("username")
@@ -40,6 +40,6 @@ class UserSchema(BaseModel):
         if not v:
             raise ValueError("Phone Number cannot be empty")
         
-        if len(str(v)) > 10:
+        if len(v) > 10:
                 raise ValueError("Phone Number cannot have more than 10 digits")
         return v

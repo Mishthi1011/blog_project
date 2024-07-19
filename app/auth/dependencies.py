@@ -3,7 +3,7 @@ from typing import Union
 from app.models.users import *
 from app.database_connection.connection import *
 from dotenv import load_dotenv
-from jose import JWTError, jwt 
+from jose import JWTError,jwt
 from app.models.users import User
 from passlib.context import CryptContext
 from fastapi import Depends, HTTPException
@@ -12,8 +12,7 @@ from fastapi.security import HTTPBearer,HTTPAuthorizationCredentials
 
 load_dotenv()
 
-key_DB = os.getenv('AES_DB_ECNRYPTION_KEY')
-iv =  os.getenv('AES_IV_KEY').encode('utf-8')
+
 SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 ALGORITHM = os.getenv("JWT_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 24 * 60
@@ -60,17 +59,16 @@ async def get_current_user(auth_credentials: HTTPAuthorizationCredentials = Depe
         if auth_credentials:
             token = auth_credentials.credentials
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-            id: str = payload.get("sub")
-            if id is None:
-                raise HTTPException(
-            status_code=401,
-            detail={"message":"authorization_errors","errors":["Could not validate credentials"]}
-        )
+            print(payload , "#####payload")
+            id: str = payload.get("id")
+            print(id , "###########di1  ")
+          
             if not id_exists(id):
                 raise HTTPException(
             status_code=401,
             detail={"message":"authorization_errors","errors":["Could not validate credentials"]}
         )
+            print(id , "########id")
             return id
     except JWTError:
         raise HTTPException(
